@@ -9,13 +9,13 @@ RUN set -xe && \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildDependencies && \
     rm -rf /var/lib/apt/lists/*
 
-COPY deployer-entrypoint.sh /
+COPY entrypoint-deployer.sh /usr/local/bin/
 
 USER www-data
 
 RUN composer global require --update-no-dev deployer/deployer:^6.2 deployer/recipes:^6.1 && \
     rm -Rf /tmp/composer/cache
 
-ENTRYPOINT ["/deployer-entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "entrypoint-deployer.sh"]
 
 CMD ["list"]
